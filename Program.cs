@@ -16,11 +16,11 @@ namespace StateMachineDemo
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File(
                     path: "./Logs/StateMachineDemo_.log", 
-                    outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{SourceContext}][{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                    outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj} {NewLine}{Exception}",
                     rollingInterval: RollingInterval.Day)
                 .WriteTo.Console(
                     theme: AnsiConsoleTheme.Code,
-                    outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{SourceContext}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                    outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj} {NewLine}{Exception}")
                 .CreateLogger();
 
             builder

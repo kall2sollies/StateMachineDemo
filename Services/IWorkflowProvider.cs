@@ -37,7 +37,7 @@ public abstract class BaseWorkflowProvider<TState, TTrigger>(
 
         stateMachine.OnTransitionCompleted(transition =>
         {
-            logger.LogInformation($"[OnTransitionCompleted] Action: {transition.Trigger}, Transition: {transition.Source} -> {transition.Destination}");
+            logger.LogInformation($"\ud83d\udd17 Action: {transition.Trigger}, Transition: {transition.Source} -> {transition.Destination}");
             
             TransitionCompleted?.Invoke(this, transition);
         });
@@ -71,6 +71,7 @@ public class ManagerValidationWorkflowProvider(
 
         stateMachine.Configure(TimeLogEntryState.Completed)
             .PermitReentry(TimeLogEntryTrigger.Update)
+            .PermitReentry(TimeLogEntryTrigger.Complete)
             .Permit(TimeLogEntryTrigger.SubmitToManager, TimeLogEntryState.AwaitingManagerValidation)
             ;
 
@@ -111,12 +112,14 @@ public class ProgressWithoutValidationWorkFlow(
             ;
 
         stateMachine.Configure(TimeLogEntryState.Completed)
+            .PermitReentry(TimeLogEntryTrigger.Update)
             .OnEntry(() => stateMachine.Fire(TimeLogEntryTrigger.WorkflowComplete))
             .Permit(TimeLogEntryTrigger.WorkflowComplete, TimeLogEntryState.Validated)
             ;
 
         stateMachine.Configure(TimeLogEntryState.Validated)
             .PermitReentry(TimeLogEntryTrigger.Update)
+            .Permit(TimeLogEntryTrigger.Cancel, TimeLogEntryState.Canceled)
             ;
     }
 }
@@ -140,12 +143,14 @@ public class EntryWithoutValidationWorkFlow(
             ;
 
         stateMachine.Configure(TimeLogEntryState.Completed)
+            .PermitReentry(TimeLogEntryTrigger.Update)
             .OnEntry(() => stateMachine.Fire(TimeLogEntryTrigger.WorkflowComplete))
             .Permit(TimeLogEntryTrigger.WorkflowComplete, TimeLogEntryState.Validated)
             ;
 
         stateMachine.Configure(TimeLogEntryState.Validated)
             .PermitReentry(TimeLogEntryTrigger.Update)
+            .Permit(TimeLogEntryTrigger.Cancel, TimeLogEntryState.Canceled)
             ;
     }
 }

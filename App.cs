@@ -28,29 +28,41 @@ public class App
         RunTestsWithStrategy(WorkflowProviderImplementationEnum.EntryWithoutValidationWorkFlow);
         _logger.LogInformation("---------------------------------------------------------------------------------------------------------------------");
 
+        // Transition callbacks are async
+        Thread.Sleep(500);
         Console.WriteLine("Press any key");
         Console.ReadKey();
     }
 
     private void RunTestsWithStrategy(WorkflowProviderImplementationEnum workflowStrategy)
     {
-        TimeLogEntryViewModel canceledEntry = new();
-        _timeLogEntryStateService.Attach(canceledEntry, workflowStrategy);
+        EntryWillBeCanceled(workflowStrategy);
+        EntryWillCompleteWorkflow(workflowStrategy);
+        EntryWillCompleteWorkflowFromIntermediaryState(TimeLogEntryState.Completed, workflowStrategy);
+    }
+
+    private void EntryWillBeCanceled(WorkflowProviderImplementationEnum workflowStrategy)
+    {
+        TimeLogEntryViewModel entryWillBeCanceled = new();
+        _timeLogEntryStateService.Attach(entryWillBeCanceled, workflowStrategy);
         _logger.LogInformation($"\n---------------------------------------" +
-                               $"\n{nameof(canceledEntry)}" +
-                               $"\nInitialState={canceledEntry.State}" +
+                               $"\n{nameof(entryWillBeCanceled)}" +
+                               $"\nInitialState={entryWillBeCanceled.State}" +
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Create);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Cancel);
-        _logger.LogInformation(canceledEntry.ToString());
+        _logger.LogInformation(entryWillBeCanceled.ToString());
         _timeLogEntryStateService.Detach();
+    }
 
-        TimeLogEntryViewModel entry = new();
-        _timeLogEntryStateService.Attach(entry, workflowStrategy);
+    private void EntryWillCompleteWorkflow(WorkflowProviderImplementationEnum workflowStrategy)
+    {
+        TimeLogEntryViewModel entryWillCompleteWorkflow = new();
+        _timeLogEntryStateService.Attach(entryWillCompleteWorkflow, workflowStrategy);
         _logger.LogInformation($"\n---------------------------------------" +
-                               $"\n{nameof(entry)}" +
-                               $"\nInitialState={entry.State}" +
+                               $"\n{nameof(entryWillCompleteWorkflow)}" +
+                               $"\nInitialState={entryWillCompleteWorkflow.State}" +
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Create);
@@ -62,14 +74,17 @@ public class App
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.SubmitToManager);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.ManagerValidates);
-        _logger.LogInformation(entry.ToString());
+        _logger.LogInformation(entryWillCompleteWorkflow.ToString());
         _timeLogEntryStateService.Detach();
+    }
 
-        TimeLogEntryViewModel entryWithInitialState = new(TimeLogEntryState.InProgress);
-        _timeLogEntryStateService.Attach(entryWithInitialState, workflowStrategy);
+    private void EntryWillCompleteWorkflowFromIntermediaryState(TimeLogEntryState state, WorkflowProviderImplementationEnum workflowStrategy)
+    {
+        TimeLogEntryViewModel entryWillCompleteWorkflowFromIntermediaryState = new(state);
+        _timeLogEntryStateService.Attach(entryWillCompleteWorkflowFromIntermediaryState, workflowStrategy);
         _logger.LogInformation($"\n---------------------------------------" +
-                               $"\n{nameof(entryWithInitialState)}" +
-                               $"\nInitialState={entryWithInitialState.State}" +
+                               $"\n{nameof(entryWillCompleteWorkflowFromIntermediaryState)}" +
+                               $"\nInitialState={entryWillCompleteWorkflowFromIntermediaryState.State}" +
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
@@ -79,29 +94,7 @@ public class App
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.SubmitToManager);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.ManagerValidates);
-        _logger.LogInformation(entryWithInitialState.ToString());
+        _logger.LogInformation(entryWillCompleteWorkflowFromIntermediaryState.ToString());
         _timeLogEntryStateService.Detach();
-
-        TimeLogEntryViewModel entryWithUndefinedState = new(TimeLogEntryState.Undefined);
-        _timeLogEntryStateService.Attach(entryWithUndefinedState, workflowStrategy);
-        _logger.LogInformation($"\n---------------------------------------" +
-                               $"\n{nameof(entryWithUndefinedState)}" +
-                               $"\nInitialState={entryWithUndefinedState.State}" +
-                               $"\nWorkflow={workflowStrategy}" +
-                               $"\n---------------------------------------\n");
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Create);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Complete);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.SubmitToManager);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.ManagerDeclines);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.SubmitToManager);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
-        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.ManagerValidates);
-        _logger.LogInformation(entryWithUndefinedState.ToString());
-        _timeLogEntryStateService.Detach();
-
-        Thread.Sleep(500);
     }
 }

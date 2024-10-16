@@ -51,11 +51,12 @@ public class TimeLogEntryStateService :
     {
         if (CanFire(trigger))
         {
+            _logger.LogInformation($"\u26a1 {trigger}");
             _stateMachine.Fire(trigger);
         }
         else
         {
-            _logger.LogWarning($"Tentative de trigger {trigger} sur l'état {_currentTimeLogEntry.State}");
+            _logger.LogWarning($"\u26d4 {trigger} on state {_currentTimeLogEntry.State}");
         }
     }
 
