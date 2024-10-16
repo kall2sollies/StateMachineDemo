@@ -3,6 +3,11 @@
 This project is a sandbox project to play with Stateless within dependency injection context.
 Check out Stateless : https://github.com/dotnet-state-machine/stateless
 
+It's an implementation of a state-machine with 3 different workflows :
+
+* one with manager validation / declination process
+* two where everything is always validated / can be modified or canceled anytime
+
 # Results
 ````log
 [2024-10-16 23:50:27.632][INF] 

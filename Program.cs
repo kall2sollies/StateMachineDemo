@@ -27,13 +27,15 @@ namespace StateMachineDemo
                 .RegisterInstance(LoggerFactory.Create(x => x.AddSerilog()))
                 .As<ILoggerFactory>();
 
-            builder.RegisterGeneric(typeof(Logger<>))
+            builder
+                .RegisterGeneric(typeof(Logger<>))
                 .As(typeof(ILogger<>))
                 .SingleInstance();
 
-            builder.RegisterType<TimeLogEntryStateService>().As<ITimeLogEntryStateService>().InstancePerDependency();
-            builder.RegisterType<EntryWithoutValidationWorkFlow>().As<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>().InstancePerDependency();
-            builder.RegisterType<App>().SingleInstance();
+            builder
+                .RegisterType<TimeLogEntryStateService>()
+                .As<ITimeLogEntryStateService>()
+                .InstancePerDependency();
 
             builder
                 .RegisterType<ManagerValidationWorkflowProvider>()
@@ -50,9 +52,10 @@ namespace StateMachineDemo
                 .Keyed<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>(WorkflowProviderImplementationEnum.EntryWithoutValidationWorkFlow)
                 .InstancePerDependency();
 
-            IContainer container = builder.Build();
+            builder
+                .RegisterType<App>();
 
-            container.Resolve<App>().Run();
+            builder.Build().Resolve<App>().Run();
         }
     }
 }
