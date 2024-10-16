@@ -1,6 +1,7 @@
 using System;
 using System.IO;
-using Microsoft.Extensions.Configuration;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StateMachineDemo.Models;
@@ -12,35 +13,32 @@ namespace StateMachineDemo
     {
         public static void Main(string[] args)
         {
-            // create service collection
-            ServiceCollection serviceCollection = new();
-            ConfigureServices(serviceCollection);
+            ContainerBuilder builder = new();
 
-            // create service provider
-            ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+            builder.RegisterInstance(BuildLoggerFactory()).As<ILoggerFactory>();
 
-            // run app
-            serviceProvider.GetService<App>().Run();
+            builder.RegisterGeneric(typeof(Logger<>))
+                .As(typeof(ILogger<>))
+                .SingleInstance();
+
+            builder.RegisterType<TimeLogEntryStateService>().As<ITimeLogEntryStateService>().InstancePerDependency();
+            builder.RegisterType<EntryWithoutValidationWorkFlow>().As<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>().InstancePerDependency();
+            builder.RegisterType<App>().SingleInstance();
+
+            //builder.RegisterType<RegiondoToApidaeConverter>().Keyed<IBaseApidaeConverter>(ApidaeConvertersEnum.RegiondoToApidae);
+
+            IContainer container = builder.Build();
+
+            container.Resolve<App>().Run();
         }
 
-        private static void ConfigureServices(IServiceCollection serviceCollection)
+        private static ILoggerFactory BuildLoggerFactory()
         {
-            // add logging
-            serviceCollection.AddSingleton(LoggerFactory.Create(builder =>
+            return LoggerFactory.Create(builder =>
             {
                 builder.AddConsole();
                 builder.AddDebug();
-            }));
-            serviceCollection.AddLogging(); 
-
-            // add services
-            //serviceCollection.AddTransient<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>, ManagerValidationWorkflowProvider>();
-            //serviceCollection.AddTransient<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>, ProgressWithoutValidationWorkFlow>();
-            serviceCollection.AddTransient<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>, EntryWithoutValidationWorkFlow>();
-            serviceCollection.AddTransient<ITimeLogEntryStateService, TimeLogEntryStateService>();
-
-            // add app
-            serviceCollection.AddTransient<App>();
+            });
         }
     }
 }

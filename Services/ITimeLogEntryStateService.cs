@@ -5,9 +5,10 @@ using StateMachineDemo.Models;
 
 namespace StateMachineDemo.Services;
 
-public interface ITimeLogEntryStateService : IDisposable
+public interface ITimeLogEntryStateService
 {
     public void Attach(IStateFieldAccessor timeLogEntry);
+    public void Detach();
     public void Fire(TimeLogEntryTrigger trigger);
     public bool CanFire(TimeLogEntryTrigger trigger);
 }
@@ -61,7 +62,7 @@ public class TimeLogEntryStateService :
         _currentTimeLogEntry.History.Add(new TimeLogEntryHistoryViewModel(trigger, initial, final));
     }
 
-    public void Dispose()
+    public void Detach()
     {
         _currentTimeLogEntry = null;
         _stateMachine = null;
