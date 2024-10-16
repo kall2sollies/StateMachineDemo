@@ -4,7 +4,13 @@ using System.Text;
 
 namespace StateMachineDemo.Models;
 
-public class TimeLogEntryViewModel
+public interface IStateAccessor
+{
+    public TimeLogEntryState State { get; set; }
+    public List<TimeLogEntryHistoryViewModel> History { get; set; }
+}
+
+public class TimeLogEntryViewModel : IStateAccessor
 {
     public TimeLogEntryState State { get; set; }
     public List<TimeLogEntryHistoryViewModel> History { get; set; } = [];
