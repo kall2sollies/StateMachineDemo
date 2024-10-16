@@ -21,7 +21,7 @@ public enum TimeLogEntryState
 
 public enum TimeLogEntryTrigger
 {
-    //Create,
+    Create,
     Update,
     Complete,
     Cancel,

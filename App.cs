@@ -50,10 +50,11 @@ public class App
 
         using (var stateService = Resolve<ITimeLogEntryStateService>())
         {
-            TimeLogEntryViewModel entryWithInitialState = new(TimeLogEntryState.Completed);
+            TimeLogEntryViewModel entryWithInitialState = new(TimeLogEntryState.InProgress);
             stateService.Attach(entryWithInitialState);
             _logger.LogInformation($"\n---------------------------------------\n{nameof(entryWithInitialState)}, InitialState={entryWithInitialState.State}\n---------------------------------------\n");
             stateService.Fire(TimeLogEntryTrigger.Update);
+            stateService.Fire(TimeLogEntryTrigger.Complete);
             stateService.Fire(TimeLogEntryTrigger.SubmitToManager);
             stateService.Fire(TimeLogEntryTrigger.ManagerDeclines);
             stateService.Fire(TimeLogEntryTrigger.Update);
