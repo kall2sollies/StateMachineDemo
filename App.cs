@@ -22,8 +22,11 @@ public class App
     public void Run()
     {
         RunTestsWithStrategy(WorkflowProviderImplementationEnum.ManagerValidationWorkflowProvider);
+        _logger.LogInformation("---------------------------------------------------------------------------------------------------------------------");
         RunTestsWithStrategy(WorkflowProviderImplementationEnum.ProgressWithoutValidationWorkFlow);
+        _logger.LogInformation("---------------------------------------------------------------------------------------------------------------------");
         RunTestsWithStrategy(WorkflowProviderImplementationEnum.EntryWithoutValidationWorkFlow);
+        _logger.LogInformation("---------------------------------------------------------------------------------------------------------------------");
 
         Console.WriteLine("Press any key");
         Console.ReadKey();
@@ -38,6 +41,7 @@ public class App
                                $"\nInitialState={canceledEntry.State}" +
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
+        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Create);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Cancel);
         _logger.LogInformation(canceledEntry.ToString());
         _timeLogEntryStateService.Detach();
@@ -49,6 +53,7 @@ public class App
                                $"\nInitialState={entry.State}" +
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
+        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Create);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Complete);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
@@ -84,6 +89,7 @@ public class App
                                $"\nInitialState={entryWithUndefinedState.State}" +
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
+        _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Create);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Complete);
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
