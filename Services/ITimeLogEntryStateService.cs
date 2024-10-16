@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using Stateless;
 using StateMachineDemo.Models;
 
 namespace StateMachineDemo.Services;
 
-public interface ITimeLogEntryStateService
+public interface ITimeLogEntryStateService : IDisposable
 {
     public void Attach(IStateFieldAccessor timeLogEntry);
     public void Fire(TimeLogEntryTrigger trigger);
@@ -58,5 +59,11 @@ public class TimeLogEntryStateService :
     private void AddHistory(TimeLogEntryTrigger trigger, TimeLogEntryState initial, TimeLogEntryState final)
     {
         _currentTimeLogEntry.History.Add(new TimeLogEntryHistoryViewModel(trigger, initial, final));
+    }
+
+    public void Dispose()
+    {
+        _currentTimeLogEntry = null;
+        _stateMachine = null;
     }
 }
