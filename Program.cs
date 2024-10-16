@@ -35,6 +35,7 @@ namespace StateMachineDemo
 
             // add services
             serviceCollection.AddTransient<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>, ManagerValidationWorkflowProvider>();
+            serviceCollection.AddTransient<ITimeLogEntryStateService, TimeLogEntryStateService>();
 
             // add app
             serviceCollection.AddTransient<App>();
