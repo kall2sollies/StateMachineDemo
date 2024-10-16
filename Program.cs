@@ -1,8 +1,10 @@
+using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StateMachineDemo.Models;
+using StateMachineDemo.Services;
 
 namespace StateMachineDemo
 {
@@ -32,6 +34,7 @@ namespace StateMachineDemo
             serviceCollection.AddLogging(); 
 
             // add services
+            serviceCollection.AddTransient<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>, ManagerValidationWorkflowProvider>();
 
             // add app
             serviceCollection.AddTransient<App>();
