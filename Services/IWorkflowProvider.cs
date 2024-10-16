@@ -5,6 +5,13 @@ using StateMachineDemo.Models;
 
 namespace StateMachineDemo.Services;
 
+public enum WorkflowProviderImplementationEnum
+{
+    ManagerValidationWorkflowProvider,
+    ProgressWithoutValidationWorkFlow,
+    EntryWithoutValidationWorkFlow
+}
+
 public interface IWorkflowProvider<TState, TTrigger>
     where TState : Enum
     where TTrigger : Enum 

@@ -1,9 +1,7 @@
-using System;
-using System.IO;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 using StateMachineDemo.Models;
 using StateMachineDemo.Services;
 
@@ -15,7 +13,15 @@ namespace StateMachineDemo
         {
             ContainerBuilder builder = new();
 
-            builder.RegisterInstance(BuildLoggerFactory()).As<ILoggerFactory>();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console(
+                    theme: AnsiConsoleTheme.Code,
+                    outputTemplate: "[{Timestamp:HH:mm:ss.fff}] [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+
+            builder
+                .RegisterInstance(LoggerFactory.Create(x => x.AddSerilog()))
+                .As<ILoggerFactory>();
 
             builder.RegisterGeneric(typeof(Logger<>))
                 .As(typeof(ILogger<>))
@@ -25,20 +31,24 @@ namespace StateMachineDemo
             builder.RegisterType<EntryWithoutValidationWorkFlow>().As<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>().InstancePerDependency();
             builder.RegisterType<App>().SingleInstance();
 
-            //builder.RegisterType<RegiondoToApidaeConverter>().Keyed<IBaseApidaeConverter>(ApidaeConvertersEnum.RegiondoToApidae);
+            builder
+                .RegisterType<ManagerValidationWorkflowProvider>()
+                .Keyed<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>(WorkflowProviderImplementationEnum.ManagerValidationWorkflowProvider)
+                .InstancePerDependency();
+
+            builder
+                .RegisterType<ProgressWithoutValidationWorkFlow>()
+                .Keyed<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>(WorkflowProviderImplementationEnum.ProgressWithoutValidationWorkFlow)
+                .InstancePerDependency();
+
+            builder
+                .RegisterType<EntryWithoutValidationWorkFlow>()
+                .Keyed<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>(WorkflowProviderImplementationEnum.EntryWithoutValidationWorkFlow)
+                .InstancePerDependency();
 
             IContainer container = builder.Build();
 
             container.Resolve<App>().Run();
-        }
-
-        private static ILoggerFactory BuildLoggerFactory()
-        {
-            return LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-                builder.AddDebug();
-            });
         }
     }
 }

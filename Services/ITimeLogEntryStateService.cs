@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Autofac.Features.Indexed;
 using Microsoft.Extensions.Logging;
 using Stateless;
 using StateMachineDemo.Models;
@@ -7,7 +7,7 @@ namespace StateMachineDemo.Services;
 
 public interface ITimeLogEntryStateService
 {
-    public void Attach(IStateFieldAccessor timeLogEntry);
+    public void Attach(IStateFieldAccessor timeLogEntry, WorkflowProviderImplementationEnum workflow);
     public void Detach();
     public void Fire(TimeLogEntryTrigger trigger);
     public bool CanFire(TimeLogEntryTrigger trigger);
@@ -18,27 +18,29 @@ public class TimeLogEntryStateService :
 {
     private IStateFieldAccessor _currentTimeLogEntry;
     private StateMachine<TimeLogEntryState, TimeLogEntryTrigger> _stateMachine;
-    private readonly IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger> _workflowProvider;
     private readonly ILogger<TimeLogEntryStateService> _logger;
+    private readonly IIndex<WorkflowProviderImplementationEnum, IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>> _workflowStrategy;
 
     public TimeLogEntryStateService(
-        ILogger<TimeLogEntryStateService> logger,
-        IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger> workflowProvider)
+        IIndex<WorkflowProviderImplementationEnum, IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>> workflowStrategy,
+        ILogger<TimeLogEntryStateService> logger)
     {
         _logger = logger;
-        _workflowProvider = workflowProvider;
-
-        _workflowProvider.TransitionCompleted += (_, transition) =>
-        {
-            AddHistory(transition.Trigger, transition.Source, transition.Destination);
-        };
+        _workflowStrategy = workflowStrategy;
     }
 
-    public void Attach(IStateFieldAccessor timeLogEntry)
+    public void Attach(IStateFieldAccessor timeLogEntry, WorkflowProviderImplementationEnum workflow)
     {
         _currentTimeLogEntry = timeLogEntry;
 
-        _stateMachine = _workflowProvider.BuildStateMachine(
+        IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger> workflowProvider = _workflowStrategy[workflow];
+
+        workflowProvider.TransitionCompleted += (_, transition) =>
+        {
+            AddHistory(transition.Trigger, transition.Source, transition.Destination);
+        };
+
+        _stateMachine = workflowProvider.BuildStateMachine(
             stateAccessor: () => _currentTimeLogEntry.State,
             stateMutator: s => _currentTimeLogEntry.State = s);
     }
@@ -53,7 +55,7 @@ public class TimeLogEntryStateService :
         }
         else
         {
-            _logger.LogError($"Tentative de trigger {trigger} sur l'état {_currentTimeLogEntry.State}");
+            _logger.LogWarning($"Tentative de trigger {trigger} sur l'état {_currentTimeLogEntry.State}");
         }
     }
 

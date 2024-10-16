@@ -27,7 +27,7 @@ public class TimeLogEntryViewModel : IStateFieldAccessor
     public override string ToString()
     {
         StringBuilder sb = new();
-        sb.AppendLine("---------------------------------------");
+        sb.AppendLine("\n---------------------------------------");
         sb.AppendLine($"Current State: {State}");
 
         if (History.Count > 0)
