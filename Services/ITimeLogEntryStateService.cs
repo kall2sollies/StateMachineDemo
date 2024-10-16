@@ -8,6 +8,7 @@ public interface ITimeLogEntryStateService
 {
     public void Attach(TimeLogEntryViewModel timeLogEntry);
     public void Fire(TimeLogEntryTrigger trigger);
+    public bool CanFire(TimeLogEntryTrigger trigger);
 }
 
 public class TimeLogEntryStateService :
@@ -40,9 +41,11 @@ public class TimeLogEntryStateService :
             stateMutator: s => _currentTimeLogEntry.State = s);
     }
 
+    public bool CanFire(TimeLogEntryTrigger trigger) => _stateMachine.CanFire(trigger);
+
     public void Fire(TimeLogEntryTrigger trigger)
     {
-        if (_stateMachine.CanFire(trigger))
+        if (CanFire(trigger))
         {
             _stateMachine.Fire(trigger);
         }
