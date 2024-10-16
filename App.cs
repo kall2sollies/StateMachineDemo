@@ -30,8 +30,6 @@ public class App
 
         // Transition callbacks are async
         Thread.Sleep(500);
-        Console.WriteLine("Press any key");
-        Console.ReadKey();
     }
 
     private void RunTestsWithStrategy(WorkflowProviderImplementationEnum workflowStrategy)
