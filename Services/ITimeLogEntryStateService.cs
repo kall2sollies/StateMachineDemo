@@ -6,7 +6,7 @@ namespace StateMachineDemo.Services;
 
 public interface ITimeLogEntryStateService
 {
-    public void Attach(IStateAccessor timeLogEntry);
+    public void Attach(IStateFieldAccessor timeLogEntry);
     public void Fire(TimeLogEntryTrigger trigger);
     public bool CanFire(TimeLogEntryTrigger trigger);
 }
@@ -14,7 +14,7 @@ public interface ITimeLogEntryStateService
 public class TimeLogEntryStateService :
     ITimeLogEntryStateService
 {
-    private IStateAccessor _currentTimeLogEntry;
+    private IStateFieldAccessor _currentTimeLogEntry;
     private StateMachine<TimeLogEntryState, TimeLogEntryTrigger> _stateMachine;
     private readonly IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger> _workflowProvider;
     private readonly ILogger<TimeLogEntryStateService> _logger;
@@ -32,7 +32,7 @@ public class TimeLogEntryStateService :
         };
     }
 
-    public void Attach(IStateAccessor timeLogEntry)
+    public void Attach(IStateFieldAccessor timeLogEntry)
     {
         _currentTimeLogEntry = timeLogEntry;
 

@@ -4,13 +4,13 @@ using System.Text;
 
 namespace StateMachineDemo.Models;
 
-public interface IStateAccessor
+public interface IStateFieldAccessor
 {
     public TimeLogEntryState State { get; set; }
     public List<TimeLogEntryHistoryViewModel> History { get; set; }
 }
 
-public class TimeLogEntryViewModel : IStateAccessor
+public class TimeLogEntryViewModel : IStateFieldAccessor
 {
     public TimeLogEntryState State { get; set; }
     public List<TimeLogEntryHistoryViewModel> History { get; set; } = [];
