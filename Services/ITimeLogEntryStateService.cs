@@ -10,7 +10,7 @@ public interface ITimeLogEntryStateService
     public void Attach(IStateFieldAccessor timeLogEntry, WorkflowProviderImplementationEnum workflow);
     public void Detach();
     public void Fire(TimeLogEntryTrigger trigger);
-    public bool CanFire(TimeLogEntryTrigger trigger);
+    public TimeLogEntryState CurrentState { get; }
 }
 
 public class TimeLogEntryStateService :
@@ -28,6 +28,8 @@ public class TimeLogEntryStateService :
         _logger = logger;
         _workflowStrategy = workflowStrategy;
     }
+
+    public TimeLogEntryState CurrentState => _stateMachine.State;
 
     public void Attach(IStateFieldAccessor timeLogEntry, WorkflowProviderImplementationEnum workflow)
     {

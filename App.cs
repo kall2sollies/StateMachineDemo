@@ -49,7 +49,9 @@ public class App
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Create);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Cancel);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _logger.LogInformation(entryWillBeCanceled.ToString());
         _timeLogEntryStateService.Detach();
     }
@@ -64,14 +66,23 @@ public class App
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Create);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Complete);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.SubmitToManager);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.ManagerDeclines);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.SubmitToManager);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.ManagerValidates);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _logger.LogInformation(entryWillCompleteWorkflow.ToString());
         _timeLogEntryStateService.Detach();
     }
@@ -86,12 +97,19 @@ public class App
                                $"\nWorkflow={workflowStrategy}" +
                                $"\n---------------------------------------\n");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Complete);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.SubmitToManager);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.ManagerDeclines);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.Update);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.SubmitToManager);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _timeLogEntryStateService.Fire(TimeLogEntryTrigger.ManagerValidates);
+        _logger.LogInformation($"\u2699\ufe0f CurrentState={_timeLogEntryStateService.CurrentState}");
         _logger.LogInformation(entryWillCompleteWorkflowFromIntermediaryState.ToString());
         _timeLogEntryStateService.Detach();
     }
