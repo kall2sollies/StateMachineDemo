@@ -18,18 +18,3 @@ public enum TimeLogEntryState
 
     Validated = 500
 }
-
-public enum TimeLogEntryTrigger
-{
-    Create,
-    Update,
-    Complete,
-    Cancel,
-    SubmitToManager,
-    ManagerValidates,
-    ManagerDeclines,
-    SubmitToCustomer,
-    CustomerValidates,
-    CustomerDeclines,
-    WorkflowComplete
-}

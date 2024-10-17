@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using StateMachineDemo.Services;
 
 namespace StateMachineDemo.Models;
 
-public interface IStateFieldAccessor
-{
-    public TimeLogEntryState State { get; set; }
-    public List<TimeLogEntryHistoryViewModel> History { get; set; }
-}
-
-public class TimeLogEntryViewModel : IStateFieldAccessor
+public class TimeLogEntryViewModel
 {
     public TimeLogEntryState State { get; set; }
     public List<TimeLogEntryHistoryViewModel> History { get; set; } = [];
+    public string Name { get; set; }
+    public WorkflowProviderImplementationEnum Strategy { get; set; }
 
     public TimeLogEntryViewModel()
     {
@@ -24,11 +21,18 @@ public class TimeLogEntryViewModel : IStateFieldAccessor
         State = initialState;
     }
 
+    public void AddHistory(TimeLogEntryTrigger trigger, TimeLogEntryState initial, TimeLogEntryState final)
+    {
+        History.Add(new TimeLogEntryHistoryViewModel(trigger, initial, final));
+    }
+
     public override string ToString()
     {
         StringBuilder sb = new();
         sb.AppendLine("\n---------------------------------------");
+        sb.AppendLine($"Name: {Name}");
         sb.AppendLine($"Current State: {State}");
+        sb.AppendLine($"Strategy: {Strategy}");
 
         if (History.Count > 0)
         {
@@ -36,7 +40,7 @@ public class TimeLogEntryViewModel : IStateFieldAccessor
             History.ForEach(x => sb.AppendLine(x.ToString()));
         }
 
-        sb.AppendLine("---------------------------------------\n\n\n");
+        sb.AppendLine("---------------------------------------");
 
         return sb.ToString();
     }

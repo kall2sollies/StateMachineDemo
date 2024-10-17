@@ -33,17 +33,16 @@ namespace StateMachineDemo
                 .SingleInstance();
 
             builder
-                .RegisterType<TimeLogEntryStateService>()
-                .As<ITimeLogEntryStateService>()
-                .InstancePerDependency();
+                .RegisterType<TimeLogEntryWorkflowProviderFactory>()
+                .SingleInstance();
 
             builder
-                .RegisterType<ManagerValidationWorkflowProvider>()
+                .RegisterType<TimeLogEntryManagerValidationWorkflowProvider>()
                 .Keyed<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>(WorkflowProviderImplementationEnum.ManagerValidationWorkflowProvider)
                 .InstancePerDependency();
 
             builder
-                .RegisterType<ProgressWithoutValidationWorkFlow>()
+                .RegisterType<TimeLogEntryProgressWithoutValidationWorkFlow>()
                 .Keyed<IWorkflowProvider<TimeLogEntryState, TimeLogEntryTrigger>>(WorkflowProviderImplementationEnum.ProgressWithoutValidationWorkFlow)
                 .InstancePerDependency();
 
